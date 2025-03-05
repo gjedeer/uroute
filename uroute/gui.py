@@ -232,12 +232,13 @@ class UrouteGui(Gtk.Window):  # pylint: disable=too-many-instance-attributes
     def _build_browser_buttons(self):
         # pylint: disable=attribute-defined-outside-init
         self.browser_store = Gtk.ListStore(GdkPixbuf.Pixbuf, str, str, object)
-        iconview = Gtk.IconView.new()
-        iconview.set_model(self.browser_store)
-        iconview.set_pixbuf_column(0)
-        iconview.set_text_column(1)
-        iconview.connect('item-activated', self._on_browser_icon_activated)
-        iconview.connect('selection-changed', self._on_browser_icon_selected)
+        # pylint: disable=attribute-defined-outside-init
+        self.iconview = Gtk.IconView.new()
+        self.iconview.set_model(self.browser_store)
+        self.iconview.set_pixbuf_column(0)
+        self.iconview.set_text_column(1)
+        self.iconview.connect('item-activated', self._on_browser_icon_activated)
+        self.iconview.connect('selection-changed', self._on_browser_icon_selected)
 
         default_itr = None
         default_program = self.uroute.get_program()
@@ -255,11 +256,11 @@ class UrouteGui(Gtk.Window):  # pylint: disable=too-many-instance-attributes
                 default_itr = itr
 
         if default_itr:
-            iconview.select_path(self.browser_store.get_path(default_itr))
-            self._on_browser_icon_selected(iconview)
+            self.iconview.select_path(self.browser_store.get_path(default_itr))
+            self._on_browser_icon_selected(self.iconview)
 
         scroll = Gtk.ScrolledWindow()
-        scroll.add(iconview)
+        scroll.add(self.iconview)
         return scroll
 
     def _build_command_hbox(self):
@@ -321,3 +322,5 @@ class UrouteGui(Gtk.Window):  # pylint: disable=too-many-instance-attributes
         # Hack required because gtk
         self.clean_url_btn.set_visible(not self.orig_url)
         self.restore_url_btn.set_visible(bool(self.orig_url))
+        # Set focus to the browser buttons area instead of the URL entry
+        self.iconview.grab_focus()
