@@ -317,6 +317,10 @@ class UrouteGui(Gtk.Window):  # pylint: disable=too-many-instance-attributes
             self._on_cancel_clicked(None)
         if event.keyval == Gdk.KEY_Return:
             self._on_run_clicked(None)
+        # Ctrl+L shortcut to focus the URL bar (like in web browsers)
+        if event.keyval == Gdk.KEY_l and event.state & Gdk.ModifierType.CONTROL_MASK:
+            self.url_entry.grab_focus()
+            self.url_entry.select_region(0, -1)  # Select all text
 
     def _on_window_show(self, _window):
         # Hack required because gtk
